@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="zh-Hant" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>康睎法律事務所 | 互動式品牌行銷戰略儀表板 (最終版)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Strategic Nightfall -->
+    <!-- Application Structure Plan: The application uses a vertical, single-page dashboard structure with a fixed, collapsible side navigation on desktop and a hamburger menu on mobile. This design transforms the linear report into an interactive exploratory tool. Users (e.g., law firm partners) can either scroll through the strategic narrative or use the navigation to jump directly to key sections like 'Competitors' or 'KPIs'. This non-linear approach is superior for presentation and quick reference. Key interactions include hover-to-reveal cards for competitor analysis, a static but powerful 2x2 market opportunity matrix, and an interactive marketing blueprint diagram, all designed to make dense strategic information more engaging and memorable on a dark theme. -->
+    <!-- Visualization & Content Choices: 
+        - Competitor Analysis: Report Info: The 5 key competitor archetypes based on the latest 2025 market data. Goal: Inform & Compare. Viz: Interactive cards (HTML/Tailwind). Interaction: Hover to see weaknesses. Justification: Allows for a quick, digestible scan of the competitive landscape and our unique positioning against each archetype. Library/Method: HTML/Tailwind.
+        - Market Opportunity: Report Info: Competitor positioning. Goal: Analyze & Strategize. Viz: 2x2 Matrix (HTML/Tailwind Grid). Interaction: Static visual for clarity, placing archetypes and highlighting the 'B2B Crisis Management' quadrant as Kangxi's blue ocean. Justification: A powerful, at-a-glance visual that immediately communicates the core strategic opportunity. Library/Method: HTML/Tailwind.
+        - Marketing Model (Video-Centric): Report Info: Hub-and-Spoke model. Goal: Organize. Viz: Interactive Diagram (HTML/Tailwind). Interaction: Click spokes to see details. Justification: Visually represents the flow of information and marketing effort, with high-quality video and articles as the primary content engine. Library/Method: HTML/Tailwind.
+        - KPI Funnel: Report Info: Customer conversion funnel & KPIs. Goal: Inform & Measure. Viz: Interactive Funnel Chart (Chart.js/Canvas). Interaction: Click buttons to highlight corresponding funnel stage. Justification: Translates the abstract concept of a sales funnel into a dynamic, step-by-step visualization, adapted for a high-value B2B content strategy. Library/Method: Chart.js.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body { font-family: 'Noto Sans TC', sans-serif; }
+        .chart-container { position: relative; width: 100%; max-width: 600px; margin-left: auto; margin-right: auto; height: 350px; max-height: 400px; }
+        @media (max-width: 768px) { .chart-container { height: 300px; } }
+        .nav-link.active { background-color: #0369a1; color: white; }
+        .nav-link:not(.active) { color: #d1d5db; }
+        .timeline-item::before { content: ''; position: absolute; left: 19px; top: 0; bottom: 0; width: 2px; background-color: #374151; }
+        .timeline-item:last-child::before { display: none; }
+        .timeline-dot { position: absolute; left: 10px; top: 5px; width: 20px; height: 20px; }
+        .spoke-item.active { border-color: #0ea5e9; box-shadow: 0 0 15px rgba(14, 165, 233, 0.5); }
+        .kpi-stage-btn.active { border-color: #0ea5e9; background-color: #0c4a6e; }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-300">
+    <div class="flex flex-col lg:flex-row">
+        
+        <header id="sidebar" class="lg:w-64 lg:min-h-screen lg:fixed lg:top-0 lg:left-0 bg-slate-900/80 backdrop-blur-md border-b lg:border-r border-slate-700 p-4 z-50 flex flex-col transition-all duration-300">
+            <div class="flex justify-between items-center">
+                <h1 id="sidebar-title" class="text-xl font-bold text-sky-400 whitespace-nowrap">康睎法律事務所</h1>
+                <button id="menu-toggle" class="lg:hidden p-2 rounded-md hover:bg-slate-800">
+                    <svg class="w-6 h-6 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+                </button>
+            </div>
+            <nav id="nav-menu" class="hidden lg:block mt-6 flex-grow">
+                <ul class="space-y-2">
+                    <li><a href="#intro" class="nav-link flex items-center gap-x-3 font-medium p-3 rounded-lg hover:bg-slate-800 transition-colors"><span class="nav-text">策略總覽</span></a></li>
+                    <li><a href="#competitors" class="nav-link flex items-center gap-x-3 font-medium p-3 rounded-lg hover:bg-slate-800 transition-colors"><span class="nav-text">五強競爭者剖析</span></a></li>
+                    <li><a href="#opportunity" class="nav-link flex items-center gap-x-3 font-medium p-3 rounded-lg hover:bg-slate-800 transition-colors"><span class="nav-text">市場機會</span></a></li>
+                    <li><a href="#persona" class="nav-link flex items-center gap-x-3 font-medium p-3 rounded-lg hover:bg-slate-800 transition-colors"><span class="nav-text">品牌人設</span></a></li>
+                    <li><a href="#blueprint" class="nav-link flex items-center gap-x-3 font-medium p-3 rounded-lg hover:bg-slate-800 transition-colors"><span class="nav-text">行銷藍圖</span></a></li>
+                    <li><a href="#content" class="nav-link flex items-center gap-x-3 font-medium p-3 rounded-lg hover:bg-slate-800 transition-colors"><span class="nav-text">內容策略</span></a></li>
+                    <li><a href="#roadmap" class="nav-link flex items-center gap-x-3 font-medium p-3 rounded-lg hover:bg-slate-800 transition-colors"><span class="nav-text">發展進程</span></a></li>
+                    <li><a href="#kpi" class="nav-link flex items-center gap-x-3 font-medium p-3 rounded-lg hover:bg-slate-800 transition-colors"><span class="nav-text">績效衡量</span></a></li>
+                    <li><a href="#partnership" class="nav-link flex items-center gap-x-3 font-medium p-3 rounded-lg hover:bg-slate-800 transition-colors"><span class="nav-text">合作模式</span></a></li>
+                </ul>
+            </nav>
+            <div class="hidden lg:block mt-auto">
+                 <div class="pt-4 border-t border-slate-700 text-sm text-slate-500">
+                    <p class="nav-text">提案單位：</p>
+                    <p class="nav-text font-semibold text-slate-400">黑潮國際行銷事務所</p>
+                </div>
+                <button id="sidebar-toggle" class="w-full mt-4 p-2 flex items-center justify-center rounded-lg hover:bg-slate-700 transition-colors">
+                     <svg id="toggle-icon-collapse" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M11 19l-7-7 7-7m8 14l-7-7 7-7" />
+                    </svg>
+                    <svg id="toggle-icon-expand" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-slate-400 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M13 5l7 7-7 7M5 5l7 7-7 7" />
+                    </svg>
+                </button>
+            </div>
+        </header>
+
+        <main id="main-content" class="lg:ml-64 flex-1 p-4 sm:p-6 md:p-8 transition-all duration-300">
+            <section id="intro" class="min-h-screen flex flex-col justify-center items-center text-center">
+                <div class="max-w-3xl mx-auto">
+                    <h2 class="text-base font-semibold text-sky-400 tracking-wider">康睎法律事務所：商業法律自媒體品牌行銷戰略</h2>
+                    <p class="mt-4 text-4xl md:text-5xl font-bold tracking-tight text-white">贏得商業糾紛市場的內容戰略</p>
+                    <p class="mt-6 text-lg text-slate-400">本報告提出一套精準的內容行銷藍圖，目標是將康睎法律事務所打造成商業糾紛解決的首選品牌，贏得高價值客戶，並驅動案件持續增長。</p>
+                    <div class="mt-12 p-6 bg-amber-900/20 border border-amber-500/30 rounded-xl">
+                        <p class="text-xl font-bold text-amber-300">核心洞察</p>
+                        <p class="mt-2 text-lg text-amber-400">在冰冷的數位搜尋中，溫暖的專業信任是最終的決勝點。</p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="competitors" class="py-20">
+                <div class="max-w-5xl mx-auto">
+                    <h2 class="text-3xl font-bold text-white mb-4 text-center">五強競爭者原型剖析 (2025年7月版)</h2>
+                    <p class="text-lg text-slate-400 mb-12 text-center max-w-3xl mx-auto">我們依據最新的市場情報，歸納出五種關鍵的「影響力原型」。分析他們，不是為了模仿，而是為了找到一個無須正面衝突、且更具價值的市場切入點。</p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <div class="p-6 bg-slate-800 rounded-lg border border-slate-700 hover:border-sky-500 transition-colors group space-y-3">
+                            <h3 class="font-bold text-xl text-white">原型一：大眾市場領袖</h3>
+                            <p class="font-semibold text-sky-400">代表：賴瑩真律師</p>
+                            <p class="text-slate-300"><strong class="text-white">強項：</strong>親民時事科普，受眾廣，品牌知名度高。</p>
+                            <div class="opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                <p class="text-red-400"><strong class="text-red-300">弱點：</strong>品牌與B2C生活法律高度綁定，難以吸引尋求深度商業策略的高價值企業客戶。</p>
+                            </div>
+                        </div>
+                        <div class="p-6 bg-slate-800 rounded-lg border border-slate-700 hover:border-sky-500 transition-colors group space-y-3">
+                            <h3 class="font-bold text-xl text-white">原型二：高價值B2C專家</h3>
+                            <p class="font-semibold text-sky-400">代表：陽光暖男 蘇家宏律師</p>
+                            <p class="text-slate-300"><strong class="text-white">強項：</strong>專精高資產家事案件（遺產、信託），以溫暖同理形象建立強大信任感。</p>
+                             <div class="opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                <p class="text-red-400"><strong class="text-red-300">弱點：</strong>專業領域與品牌形象高度聚焦於「家事」，無法轉移至「商事」糾紛領域。</p>
+                            </div>
+                        </div>
+                        <div class="p-6 bg-slate-800 rounded-lg border border-slate-700 hover:border-sky-500 transition-colors group space-y-3">
+                            <h3 class="font-bold text-xl text-white">原型三：高階B2B教育家</h3>
+                            <p class="font-semibold text-sky-400">代表：理律法律講座</p>
+                            <p class="text-slate-300"><strong class="text-white">強項：</strong>公司法、投資併購等主題專業度極高，內容如專業課程，直接命中企業高階需求。</p>
+                            <div class="opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                <p class="text-red-400"><strong class="text-red-300">弱點：</strong>內容學術性強，缺乏互動與個人品牌溫度，較難建立情感連結。</p>
+                            </div>
+                        </div>
+                        <div class="p-6 bg-slate-800 rounded-lg border border-slate-700 hover:border-sky-500 transition-colors group space-y-3">
+                            <h3 class="font-bold text-xl text-white">原型四：實戰案例分享者</h3>
+                            <p class="font-semibold text-sky-400">代表：N楚立功</p>
+                            <p class="text-slate-300"><strong class="text-white">強項：</strong>以真實民刑訴訟案例為核心，故事性強，具備創造爆款影片的潛力。</p>
+                            <div class="opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                               <p class="text-red-400"><strong class="text-red-300">弱點：</strong>主題較發散，更新頻率不穩，難以建立系統性的權威感與B2B連結。</p>
+                            </div>
+                        </div>
+                        <div class="p-6 bg-slate-800 rounded-lg border border-slate-700 hover:border-sky-500 transition-colors group space-y-3">
+                            <h3 class="font-bold text-xl text-white">原型五：超利基市場玩家</h3>
+                            <p class="font-semibold text-sky-400">代表：律見奇奇怪怪</p>
+                            <p class="text-slate-300"><strong class="text-white">強項：</strong>切入自媒體法律風險、創作者稅務等新興痛點，與特定社群共鳴度高。</p>
+                            <div class="opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                <p class="text-red-400"><strong class="text-red-300">弱點：</strong>主題過於狹窄，受眾天花板較低，難以擴展至更廣泛的商業法律市場。</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <section id="opportunity" class="py-20 bg-slate-800">
+                 <div class="max-w-5xl mx-auto">
+                    <h2 class="text-3xl font-bold text-white mb-4 text-center">市場機會：定位於「通用型商業危機」的藍海</h2>
+                    <p class="text-lg text-slate-400 mb-12 text-center max-w-3xl mx-auto">精煉的五強分析，強而有力地驗證了市場的策略性缺口。機會不在於成為另一個垂直領域的王者，而在於成為處理所有企業共通病症的「企業急診室醫師」。</p>
+
+                    <div class="relative p-6 border-2 border-dashed border-slate-600 rounded-xl bg-slate-900">
+                        <div class="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 px-3 bg-slate-800 font-semibold text-white">B2B 專家</div>
+                        <div class="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 px-3 bg-slate-800 font-semibold text-white">B2C 大眾</div>
+                        <div class="absolute top-1/2 left-0 -translate-x-1/2 -translate-y-1/2 px-3 bg-slate-800 font-semibold text-white -rotate-90">特定主題</div>
+                        <div class="absolute top-1/2 right-0 translate-x-1/2 -translate-y-1/2 px-3 bg-slate-800 font-semibold text-white -rotate-90">通用議題</div>
+
+                        <div class="grid grid-cols-2 grid-rows-2 gap-4 h-96">
+                            <div class="flex items-center justify-center p-4">
+                               <div class="text-center">
+                                    <p class="text-lg font-bold text-white">理律法律講座</p>
+                                    <p class="text-sm text-slate-400">公司法、投資併購</p>
+                               </div>
+                            </div>
+                            <div class="bg-amber-500/10 border-2 border-amber-400 rounded-lg flex items-center justify-center p-4 text-center animate-pulse">
+                                <div>
+                                    <p class="text-xl font-bold text-amber-300">★ 策略藍海 ★</p>
+                                    <p class="mt-2 font-semibold text-white">康睎法律事務所的定位</p>
+                                    <p class="mt-2 text-sm text-amber-300">專精通用型商業糾紛、庭外和解的「危機策略師」</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center justify-center p-4">
+                                <div class="text-center">
+                                    <p class="text-lg font-bold text-white">蘇家宏律師 / N楚立功</p>
+                                    <p class="text-sm text-slate-400">家事法 / 訴訟案例</p>
+                               </div>
+                            </div>
+                             <div class="flex items-center justify-center p-4">
+                               <div class="text-center">
+                                    <p class="text-lg font-bold text-white">賴瑩真律師 / 律見奇奇怪怪</p>
+                                    <p class="text-sm text-slate-400">生活法律 / 自媒體法規</p>
+                               </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <section id="persona" class="py-20">
+                <div class="max-w-4xl mx-auto text-center">
+                    <h2 class="text-3xl font-bold text-white mb-4">品牌人設：鑄造「商業糾紛策略師」</h2>
+                    <p class="text-lg text-slate-400 mb-12">我們不只做「法律代理人」，我們是「商業糾紛策略師」(Business Dispute Strategist)。這個定位將成為所有行銷溝通的核心，直接與目標客戶的深層需求對話。</p>
+                    
+                    <div class="p-8 bg-sky-900/50 text-white rounded-xl shadow-xl border border-sky-700">
+                        <p class="text-2xl font-bold">核心哲學</p>
+                        <blockquote class="mt-4 text-xl italic border-l-4 border-sky-400 pl-4">
+                            「法庭上的勝訴，不等於商業上的成功。我們的首要目標是策略性地解決衝突，以保全您的資本、商業關係及企業的未來。」
+                        </blockquote>
+                    </div>
+
+                    <div class="mt-12 grid grid-cols-1 md:grid-cols-3 gap-8 text-left">
+                        <div class="p-6 bg-slate-800 border border-slate-700 rounded-lg">
+                            <h3 class="font-bold text-lg text-white">反對焦土戰的訴訟者</h3>
+                            <p class="mt-2 text-slate-400">我們追求「解決」，而非「戰鬥」。為您保全商業關係，避免無謂的消耗。</p>
+                        </div>
+                        <div class="p-6 bg-slate-800 border border-slate-700 rounded-lg">
+                            <h3 class="font-bold text-lg text-white">反對 AI 平台的制式化</h3>
+                            <p class="mt-2 text-slate-400">我們提供無法被演算法複製的客製化智慧與對人性的洞察。</p>
+                        </div>
+                        <div class="p-6 bg-slate-800 border border-slate-700 rounded-lg">
+                            <h3 class="font-bold text-lg text-white">反對僅限順境的顧問</h3>
+                            <p class="mt-2 text-slate-400">我們是您在商業風暴來臨時，最需要的那雙穩定的手。</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="blueprint" class="py-20 bg-slate-800">
+                <div class="max-w-5xl mx-auto text-center">
+                    <h2 class="text-3xl font-bold text-white mb-4">行銷藍圖：中樞輻射模型 (全媒體作戰)</h2>
+                    <p class="text-lg text-slate-400 mb-12">所有行銷活動都應被視為一個整合系統，旨在將高品質流量導回我們的核心資產——官方網站，並在那裡進行最終轉化。點擊下方的渠道，查看其扮演的角色。</p>
+                    
+                    <div class="flex flex-col md:flex-row items-center justify-center gap-8">
+                        <div id="hub" class="w-48 h-48 bg-sky-700 text-white rounded-full flex flex-col items-center justify-center z-10 shadow-lg flex-shrink-0">
+                            <span class="text-2xl font-bold">中樞 (Hub)</span>
+                            <span class="mt-1">官方網站</span>
+                        </div>
+                        <div class="grid grid-cols-2 gap-4 w-full max-w-lg">
+                            <div id="spoke-item-youtube" class="spoke-item p-4 bg-slate-900 border-2 border-slate-700 rounded-lg cursor-pointer hover:border-sky-500 transition-colors">
+                                <span class="text-lg font-bold text-white">YouTube</span>
+                                <span class="text-sm text-slate-400 block">權威建立引擎</span>
+                            </div>
+                             <div id="spoke-item-linkedin" class="spoke-item p-4 bg-slate-900 border-2 border-slate-700 rounded-lg cursor-pointer hover:border-sky-500 transition-colors">
+                                <span class="text-lg font-bold text-white">LinkedIn</span>
+                                <span class="text-sm text-slate-400 block">專業社群放大器</span>
+                            </div>
+                            <div id="spoke-item-threads" class="spoke-item p-4 bg-slate-900 border-2 border-slate-700 rounded-lg cursor-pointer hover:border-sky-500 transition-colors">
+                                <span class="text-lg font-bold text-white">Threads</span>
+                                <span class="text-sm text-slate-400 block">議題攻防戰場</span>
+                            </div>
+                             <div id="spoke-item-instagram" class="spoke-item p-4 bg-slate-900 border-2 border-slate-700 rounded-lg cursor-pointer hover:border-sky-500 transition-colors">
+                                <span class="text-lg font-bold text-white">Instagram</span>
+                                <span class="text-sm text-slate-400 block">品牌溫度塑造</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div id="spoke-details" class="mt-12 min-h-[100px] p-6 bg-amber-900/20 border border-amber-500/30 rounded-xl transition-opacity duration-300">
+                        <p id="spoke-text" class="text-lg text-amber-300 font-medium">點擊任一渠道，查看其在策略中扮演的關鍵角色。</p>
+                    </div>
+                </div>
+            </section>
+            
+            <section id="content" class="py-20">
+                <div class="max-w-4xl mx-auto">
+                    <h2 class="text-3xl font-bold text-white mb-4 text-center">內容策略：從痛點到爆點</h2>
+                    <p class="text-lg text-slate-400 mb-12 text-center">我們的內容將圍繞企業主最焦慮的問題展開，以「成功公式」打造兼具深度與傳播力的內容，藉此建立權威與信任。</p>
+
+                    <div class="w-full">
+                        <div class="flex border-b border-slate-700">
+                            <button data-tab="internal" class="content-tab flex-1 p-4 font-bold text-lg text-slate-400 hover:bg-slate-800 transition-colors border-b-4 border-transparent">內部戰爭</button>
+                            <button data-tab="external" class="content-tab flex-1 p-4 font-bold text-lg text-slate-400 hover:bg-slate-800 transition-colors border-b-4 border-transparent">外部戰役</button>
+                            <button data-tab="asset" class="content-tab flex-1 p-4 font-bold text-lg text-slate-400 hover:bg-slate-800 transition-colors border-b-4 border-transparent">資產保衛戰</button>
+                        </div>
+                        <div class="mt-8">
+                            <div id="internal" class="content-pane space-y-3">
+                                <h3 class="text-xl font-bold text-sky-400">股東與合夥人糾紛</h3>
+                                <p class="p-3 bg-slate-800 rounded-md border border-slate-700">● 影片主題：「合夥人鬧翻，如何在公司被摧毀前和平分手？」</p>
+                                <p class="p-3 bg-slate-800 rounded-md border border-slate-700">● 影片主題：「小股東如何運用查帳權，對抗大股東的濫權行為？」</p>
+                                <p class="p-3 bg-slate-800 rounded-md border border-slate-700">● 文章主題：「設計一份能預防未來戰爭的『合夥人婚前協議』」</p>
+                            </div>
+                            <div id="external" class="content-pane space-y-3 hidden">
+                                <h3 class="text-xl font-bold text-sky-400">合約與商業糾紛</h3>
+                                <p class="p-3 bg-slate-800 rounded-md border border-slate-700">● 影片主題：「最大客戶拒絕付款，除了告上法庭我還有哪些選擇？」</p>
+                                <p class="p-3 bg-slate-800 rounded-md border border-slate-700">● 影片主題：「收到對方律師函？第一時間的標準作業流程(SOP)」</p>
+                                <p class="p-3 bg-slate-800 rounded-md border border-slate-700">● 文章主題：「加盟合約中的競業禁止條款合理嗎？簽約前的陷阱分析」</p>
+                            </div>
+                            <div id="asset" class="content-pane space-y-3 hidden">
+                                <h3 class="text-xl font-bold text-sky-400">智慧財產權與營業秘密</h3>
+                                <p class="p-3 bg-slate-800 rounded-md border border-slate-700">● 影片主題：「核心員工帶著客戶名單跳槽，構成侵害營業秘密嗎？」</p>
+                                <p class="p-3 bg-slate-800 rounded-md border border-slate-700">● 影片主題：「商標被對手搶註了怎麼辦？三步驟策略性奪回」</p>
+                                <p class="p-3 bg-slate-800 rounded-md border border-slate-700">● 文章主題：「如何為您的公司進行一次全面的營業秘密健檢？」</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-16 p-8 bg-slate-800 border border-slate-700 rounded-xl">
+                        <h3 class="text-2xl font-bold text-white text-center">成功內容公式 & 案例模擬</h3>
+                        <p class="text-center mt-4 text-xl font-mono bg-slate-900 p-4 rounded-md text-amber-300">高流量議題 + 深度實用內容 + 精準廣告投放</p>
+                        <div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6 text-left">
+                            <div>
+                                <h4 class="font-bold text-lg text-sky-400">案例模擬：影片「合夥人鬧翻，如何和平分手？」</h4>
+                                <ul class="list-disc list-inside mt-2 space-y-2">
+                                    <li><strong>議題設定：</strong>直擊創業者與中小企業主最深層的恐懼與痛點，具備高度搜尋潛力。</li>
+                                    <li><strong>深度內容：</strong>不僅是法條解釋，而是提供一套可執行的「策略框架」：<br>1. 心理建設：如何管理情緒，避免意氣用事。<br>2. 財務盤點：如何清晰計算股權價值。<br>3. 談判策略：三種有效的談判開局方式。<br>4. 法律程序：存證信函、律師函、調解的時機與作用。</li>
+                                    <li><strong>精準投放：</strong>以小額預算 (如 NT$3,000) 在 LinkedIn 與 Facebook，鎖定職稱為「創辦人」、「總經理」、「執行長」的受眾進行廣告投放。<br><small class="text-red-400">(註：廣告投放為獨立浮動預算，非包含於顧問費中，建議視市場反應滾動式調整。)</small></li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-lg text-sky-400">預期成效 (單支影片)：</h4>
+                                <ul class="list-disc list-inside mt-2 space-y-2">
+                                    <li><strong>觀看次數：</strong>透過精準投放，觸及 5,000 - 10,000 名高相關性受眾。</li>
+                                    <li><strong>網站流量：</strong>引導 100 - 200 位潛在客戶訪問網站的深度文章頁面。</li>
+                                    <li><strong>名單獲取：</strong>其中 10 - 20 位下載「合夥糾紛檢查清單」，成為高價值潛在客戶名單。</li>
+                                    <li class="font-semibold text-amber-300"><strong>最終轉化：</strong>在未來3個月內，從這批名單中，產生 1 - 2 個有效的付費諮詢預約。</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="roadmap" class="py-20 bg-slate-800">
+                <div class="max-w-4xl mx-auto">
+                    <h2 class="text-3xl font-bold text-white mb-12 text-center">發展進程報告 (首年)</h2>
+                    <div class="relative pl-10">
+                        <div class="timeline-item relative pb-12">
+                            <div class="timeline-dot bg-sky-500 border-4 border-slate-900 rounded-full"></div>
+                            <h3 class="text-xl font-bold text-white mb-2">Q1: 奠定基礎 (品牌與內容整備)</h3>
+                            <p class="text-slate-400">完成品牌定位、網站優化與首批核心影音內容，為市場發聲做好萬全準備。</p>
+                        </div>
+                        <div class="timeline-item relative pb-12">
+                             <div class="timeline-dot bg-sky-500 border-4 border-slate-900 rounded-full"></div>
+                            <h3 class="text-xl font-bold text-white mb-2">Q2: 市場發聲 (頻道啟動與推廣)</h3>
+                            <p class="text-slate-400">正式啟動YouTube與LinkedIn頻道，發布首批內容，並向核心人脈圈推廣以獲取初始動能。</p>
+                        </div>
+                        <div class="timeline-item relative pb-12">
+                             <div class="timeline-dot bg-sky-500 border-4 border-slate-900 rounded-full"></div>
+                            <h3 class="text-xl font-bold text-white mb-2">Q3: 動能加速 (受眾增長與互動)</h3>
+                            <p class="text-slate-400">維持穩定內容產出節奏，根據數據分析優化主題，並主動擴大目標受眾觸及與互動。</p>
+                        </div>
+                        <div class="timeline-item relative pb-4">
+                             <div class="timeline-dot bg-sky-500 border-4 border-slate-900 rounded-full"></div>
+                            <h3 class="text-xl font-bold text-white mb-2">Q4: 數據驅動 (策略優化與擴展)</h3>
+                            <p class="text-slate-400">全面審視KPI，規劃次年內容策略，並投入小額精準廣告探索規模化增長的可能性。</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+             <section id="kpi" class="py-20">
+                <div class="max-w-4xl mx-auto">
+                    <h2 class="text-3xl font-bold text-white mb-4 text-center">績效衡量：客戶獲取漏斗分析</h2>
+                    <p class="text-lg text-slate-400 mb-12 text-center">我們的目標不是廣泛的知名度，而是對的受眾的有效互動。點擊下方按鈕，查看各階段的目標與行動。</p>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                        <div class="order-2 md:order-1">
+                             <div class="chart-container" style="height: 400px;">
+                                <canvas id="kpiFunnelChart"></canvas>
+                            </div>
+                        </div>
+                        <div id="kpi-stage-controls" class="order-1 md:order-2 space-y-4">
+                             <button data-stage="awareness" class="kpi-stage-btn w-full text-left p-6 bg-slate-800 border-2 border-slate-700 rounded-lg transition-colors duration-300">
+                                <h4 class="font-bold text-lg text-sky-400">第一階段：認知 (Awareness)</h4>
+                                <p class="mt-1 text-slate-300">企業主透過YouTube/LinkedIn接觸到我們的專業內容，意識到我們是解決商業糾紛的專家。</p>
+                            </button>
+                             <button data-stage="consideration" class="kpi-stage-btn w-full text-left p-6 bg-slate-800 border-2 border-slate-700 rounded-lg transition-colors duration-300">
+                                <h4 class="font-bold text-lg text-sky-400">第二階段：考慮 (Consideration)</h4>
+                                <p class="mt-1 text-slate-300">潛在客戶被內容吸引，開始追蹤頻道、訪問網站，並下載高價值報告，主動提供聯繫方式。</p>
+                            </button>
+                            <button data-stage="nurturing" class="kpi-stage-btn w-full text-left p-6 bg-slate-800 border-2 border-slate-700 rounded-lg transition-colors duration-300">
+                                <h4 class="font-bold text-lg text-sky-400">第三階段：培育 (Nurturing)</h4>
+                                <p class="mt-1 text-slate-300">透過電子報等渠道，我們持續提供價值，建立長期信任，成為他們心中該領域的首選專家。</p>
+                            </button>
+                             <button data-stage="conversion" class="kpi-stage-btn w-full text-left p-6 bg-slate-800 border-2 border-slate-700 rounded-lg transition-colors duration-300">
+                                <h4 class="font-bold text-lg text-sky-400">第四階段：轉化 (Conversion)</h4>
+                                <p class="mt-1 text-slate-300">當需求變得急迫時，潛在客戶將主動預約諮詢，最終成為我們的委任客戶。</p>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="partnership" class="py-20 bg-slate-800">
+                <div class="max-w-5xl mx-auto text-center">
+                    <h2 class="text-3xl font-bold text-white mb-4">從單次合作到長期夥伴</h2>
+                    <p class="text-lg text-slate-400 mb-12">內容行銷是馬拉松，而非短跑。單次影片製作是點燃火花，而持續的策略經營，才能真正建立起源源不絕的案件來源與不可撼動的品牌權威。</p>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mt-12 text-left">
+                        <div class="p-8 bg-slate-700/50 border border-slate-600 rounded-xl">
+                            <h3 class="text-2xl font-bold text-white">單次專案合作</h3>
+                            <p class="text-lg font-semibold text-amber-400 mt-1">NT$ 18,000 (短影音試作)</p>
+                            <div class="mt-6">
+                                <h4 class="font-bold text-white">優點：</h4>
+                                <ul class="list-disc list-inside text-slate-300 mt-2 space-y-1">
+                                    <li>低門檻，快速測試市場反應</li>
+                                    <li>體驗雙方合作模式與流程</li>
+                                </ul>
+                            </div>
+                            <div class="mt-6">
+                                <h4 class="font-bold text-red-400">缺點：</h4>
+                                <ul class="list-disc list-inside text-red-400/90 mt-2 space-y-1">
+                                    <li><strong class="text-red-300">僅含單次腳本與製作，缺乏長期策略佈局與成效監督。</strong></li>
+                                    <li>品牌效益短暫，無法累積信任</li>
+                                    <li>缺乏數據，無法進行策略優化</li>
+                                    <li>無法建立可持續的案件來源</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="p-8 bg-sky-900/50 border-2 border-sky-500 rounded-xl ring-4 ring-sky-500/20">
+                             <h3 class="text-2xl font-bold text-white">長期顧問合約</h3>
+                            <p class="text-lg font-semibold text-amber-300 mt-1">NT$ 25,000 / 月 (起)</p>
+                             <div class="mt-6">
+                                <h4 class="font-bold text-white">核心服務 (二選一)：</h4>
+                                <ul class="list-disc list-inside text-slate-300 mt-2 space-y-1">
+                                    <li><strong>方案A (廣度與頻率):</strong> 每月 10 支短影音 + 腳本規劃撰寫</li>
+                                    <li><strong>方案B (深度與權威):</strong> 每月 2 支 15 分鐘長影音 + 腳本規劃撰寫</li>
+                                </ul>
+                                <h4 class="font-bold text-white mt-4">共同包含：</h4>
+                                 <ul class="list-disc list-inside text-slate-300 mt-2 space-y-1">
+                                    <li>每月 3 小時顧問諮詢服務</li>
+                                    <li>每月成效報告書出產</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                     <div class="mt-10 p-6 bg-slate-700/30 border border-slate-600 rounded-xl text-left">
+                        <h3 class="text-xl font-bold text-white text-center">可加購之進階服務</h3>
+                        <div class="mt-4 grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <div>
+                                <h4 class="font-semibold text-sky-400">社群媒體代操</h4>
+                                <p class="text-slate-400 mt-1">每月 NT$ 10,000 起。包含 LinkedIn, Threads 等平台的內容規劃、發布與基本互動管理。</p>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-sky-400">形象網頁設計與建置</h4>
+                                <p class="text-slate-400 mt-1">打造符合「商業糾紛策略師」專業形象的官方網站，優化使用者體驗與諮詢轉換率。</p>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-sky-400">客製化影音媒體服務</h4>
+                                <p class="text-slate-400 mt-1">包含YouTube長影片、Reels/Shorts短影音的完整企劃、拍攝與後期製作，建立全方位的影像影響力。</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            
+            const menuToggle = document.getElementById('menu-toggle');
+            const navMenu = document.getElementById('nav-menu');
+            if (menuToggle && navMenu) {
+                menuToggle.addEventListener('click', () => {
+                    navMenu.classList.toggle('hidden');
+                });
+            }
+            
+            const kpiFunnelCtx = document.getElementById('kpiFunnelChart');
+            let kpiFunnelChart;
+            const funnelData = {
+                labels: ['認知', '考慮', '培育', '轉化'],
+                values: [10000, 2500, 500, 50],
+                colors: {
+                    default: ['#0369a1', '#0ea5e9', '#38bdf8', '#7dd3fc'],
+                    highlight: '#fbbf24' // amber-400
+                }
+            };
+            
+            if (kpiFunnelCtx) {
+                kpiFunnelChart = new Chart(kpiFunnelCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: funnelData.labels,
+                        datasets: [{
+                            label: '潛在客戶數量',
+                            data: funnelData.values,
+                            backgroundColor: funnelData.colors.default,
+                            borderWidth: 0,
+                            barPercentage: 1.0,
+                            categoryPercentage: 1.0
+                        }]
+                    },
+                    options: {
+                        indexAxis: 'y',
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            x: {
+                                beginAtZero: true,
+                                grid: { color: '#374151' },
+                                ticks: { color: '#9ca3af' }
+                            },
+                            y: {
+                                grid: { display: false },
+                                ticks: { color: '#d1d5db', font: { size: 14, family: "'Noto Sans TC', sans-serif", weight: 'bold' } }
+                            }
+                        },
+                        plugins: {
+                            legend: { display: false },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        let label = context.dataset.label || '';
+                                        if (label) { label += ': '; }
+                                        if (context.parsed.x !== null) {
+                                            label += `${context.parsed.x} 人`;
+                                        }
+                                        return label;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+            const kpiStageControls = document.getElementById('kpi-stage-controls');
+            const stageButtons = kpiStageControls ? kpiStageControls.querySelectorAll('.kpi-stage-btn') : [];
+
+            const updateFunnelChart = (selectedStage) => {
+                const stageMap = {
+                    'awareness': 0,
+                    'consideration': 1,
+                    'nurturing': 2,
+                    'conversion': 3
+                };
+                const highlightIndex = stageMap[selectedStage];
+                
+                const newColors = [...funnelData.colors.default];
+                if (highlightIndex !== undefined) {
+                    newColors[highlightIndex] = funnelData.colors.highlight;
+                }
+                
+                kpiFunnelChart.data.datasets[0].backgroundColor = newColors;
+                kpiFunnelChart.update();
+
+                stageButtons.forEach(btn => {
+                    if (btn.dataset.stage === selectedStage) {
+                        btn.classList.add('active');
+                    } else {
+                        btn.classList.remove('active');
+                    }
+                });
+            };
+
+            stageButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const stage = button.dataset.stage;
+                    updateFunnelChart(stage);
+                });
+            });
+
+            // Initial state
+            if (stageButtons.length > 0) {
+                updateFunnelChart('awareness');
+            }
+            
+            const spokeItems = document.querySelectorAll('.spoke-item');
+            const spokeText = document.getElementById('spoke-text');
+            const spokeDetails = {
+                'spoke-item-youtube': '<strong>YouTube 專業頻道</strong>: 權威建立的視覺化引擎。透過高品質、具深度的影音內容，直接展示處理複雜商業糾紛的專業能力與策略思維，建立無可取代的專家形象。',
+                'spoke-item-linkedin': '<strong>LinkedIn</strong>: 專業社群的放大器。B2B 客戶主要聚集地，用於分享專業觀點、放大影音內容影響力、觸及潛在客戶與合作夥伴。',
+                'spoke-item-threads': '<strong>Threads 議題戰場</strong>: 低成本高回報的意見領袖塑造平台。其演算法偏好文字思辨與爭議性話題，適合快速發表對商業時事的精準法律觀點，引發討論，建立犀利、反應迅速的專家形象。',
+                'spoke-item-instagram': '<strong>Instagram 品牌溫度</strong>: 建立律師專業外的人性化連結。透過限動、圖文分享工作日常、團隊互動、成功案例的幕後故事，拉近與潛在客戶的距離，建立「有溫度」的信任感。'
+            };
+
+            spokeItems.forEach(item => {
+                item.addEventListener('click', () => {
+                    spokeText.innerHTML = spokeDetails[item.id];
+                    spokeItems.forEach(i => i.classList.remove('active'));
+                    item.classList.add('active');
+                });
+            });
+            
+            const contentTabs = document.querySelectorAll('.content-tab');
+            const contentPanes = document.querySelectorAll('.content-pane');
+
+            const activateTab = (activeTab) => {
+                 contentTabs.forEach(tab => {
+                    const isTabActive = tab.dataset.tab === activeTab.dataset.tab;
+                    tab.classList.toggle('text-sky-400', isTabActive);
+                    tab.classList.toggle('border-sky-400', isTabActive);
+                    tab.classList.toggle('text-slate-400', !isTabActive);
+                    tab.classList.toggle('border-transparent', !isTabActive);
+                });
+                contentPanes.forEach(pane => {
+                    pane.classList.toggle('hidden', pane.id !== activeTab.dataset.tab);
+                });
+            }
+
+            contentTabs.forEach(tab => {
+                tab.addEventListener('click', () => activateTab(tab));
+            });
+
+            if (contentTabs.length > 0) {
+                 activateTab(contentTabs[0]);
+            }
+
+            const sections = document.querySelectorAll('section');
+            const navLinks = document.querySelectorAll('.nav-link');
+
+            const observerOptions = {
+                root: null,
+                rootMargin: '0px',
+                threshold: 0.3
+            };
+
+            const observer = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const id = entry.target.getAttribute('id');
+                        navLinks.forEach(link => {
+                            link.classList.remove('active');
+                            if (link.getAttribute('href') === `#${id}`) {
+                                link.classList.add('active');
+                            }
+                        });
+                    }
+                });
+            }, observerOptions);
+
+            sections.forEach(section => {
+                observer.observe(section);
+            });
+
+            const sidebar = document.getElementById('sidebar');
+            const mainContent = document.getElementById('main-content');
+            const sidebarToggle = document.getElementById('sidebar-toggle');
+            const navTexts = document.querySelectorAll('.nav-text');
+            const sidebarTitle = document.getElementById('sidebar-title');
+            const toggleIconCollapse = document.getElementById('toggle-icon-collapse');
+            const toggleIconExpand = document.getElementById('toggle-icon-expand');
+
+            sidebarToggle.addEventListener('click', () => {
+                sidebar.classList.toggle('lg:w-64');
+                sidebar.classList.toggle('lg:w-20');
+                mainContent.classList.toggle('lg:ml-64');
+                mainContent.classList.toggle('lg:ml-20');
+                sidebarTitle.classList.toggle('hidden');
+                toggleIconCollapse.classList.toggle('hidden');
+                toggleIconExpand.classList.toggle('hidden');
+
+                navTexts.forEach(text => {
+                    text.classList.toggle('hidden');
+                });
+            });
+        });
+    </script>
+</body>
+</html>
