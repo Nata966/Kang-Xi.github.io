@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>頻道主軸初期戰略規劃建議書</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Deep Dark -->
+    <!-- Application Structure Plan: This is version 2.5 of the "Strategic Launch Plan" dashboard. The "Traffic Estimation Report" section has been significantly revised. The title and description now explicitly state the three-month timeframe for the forecast. A new "Advertising Strategy" subsection has been added to introduce paid ads as an optional accelerator for high-performing organic content, clarifying that the base forecast does not rely on ad spend. This manages client expectations effectively. -->
+    <!-- Visualization & Content Choices: 
+        - The visualizations remain the same, but the context provided in the "Traffic Estimation Report" is now more detailed and transparent regarding the timeframe and the role of paid advertising.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', 'Noto Sans TC', sans-serif;
+            background-color: #111827; /* Tailwind gray-900 */
+        }
+        .phase-tab, .analysis-tab {
+            transition: all 0.3s ease;
+        }
+        .phase-tab.active, .analysis-tab.active {
+            background-color: #047857; /* Darker Emerald */
+            color: white;
+        }
+        .phase-tab:not(.active):hover, .analysis-tab:not(.active):hover {
+            background-color: #059669; /* Emerald on hover */
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 400px;
+            }
+        }
+    </style>
+</head>
+<body class="text-gray-300">
+
+    <div class="container mx-auto p-4 sm:p-6 md:p-8">
+        
+        <header class="text-center mb-8 md:mb-12">
+            <h1 class="text-3xl md:text-4xl font-bold text-emerald-300">頻道主軸初期戰略規劃建議書</h1>
+            <p class="mt-2 text-lg text-gray-400">一個將策略轉化為行動的互動式藍圖</p>
+        </header>
+
+        <main>
+            <!-- Section 1: Strategic Rationale Section -->
+            <section id="strategy-rationale" class="mb-12">
+                <div class="bg-gray-800 rounded-xl shadow-2xl p-6 ring-1 ring-white/10">
+                    <h2 class="text-2xl font-bold text-center text-emerald-400 mb-2">初期戰略核心：為何全力主攻「詐騙」議題？</h2>
+                    <p class="text-center text-gray-400 mb-8 max-w-2xl mx-auto">
+                        將所有初期資源集中於單一高潛力議題，是一個經過深思熟慮的「單點擊穿」戰術。此決策旨在最大化初始影響力、快速建立品牌護城河，其背後有四大核心邏輯支撐。
+                    </p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="bg-gray-900 p-5 rounded-lg">
+                            <h3 class="text-lg font-bold text-emerald-400 flex items-center mb-2">
+                                <span class="text-2xl mr-3">🎯</span> 最大化觸及率
+                            </h3>
+                            <p class="text-gray-400">「詐騙」是極少數能跨越年齡、性別、職業的全民痛點。高社會關注度與高搜尋量，確保了內容擁有最廣泛的潛在觀眾基礎，是啟動自然流量的最佳引擎。</p>
+                        </div>
+                        <div class="bg-gray-900 p-5 rounded-lg">
+                            <h3 class="text-lg font-bold text-emerald-400 flex items-center mb-2">
+                                <span class="text-2xl mr-3">👑</span> 建立立即權威
+                            </h3>
+                            <p class="text-gray-400">相較於分散主題，集中火力向平台與觀眾傳遞一個清晰信號：「我就是反詐騙法律的第一專家」。這種權威性一旦建立，將大幅提升粉絲的信任度與黏著度。</p>
+                        </div>
+                        <div class="bg-gray-900 p-5 rounded-lg">
+                            <h3 class="text-lg font-bold text-emerald-400 flex items-center mb-2">
+                                <span class="text-2xl mr-3">❤️‍🔥</span> 觸發情感共鳴
+                            </h3>
+                            <p class="text-gray-400">詐騙議題蘊含著憤怒、無助、正義感等強烈情感。觸及情感的內容更容易被分享、評論和記憶，這對初期社群的建立與擴散至關重要。</p>
+                        </div>
+                        <div class="bg-gray-900 p-5 rounded-lg">
+                            <h3 class="text-lg font-bold text-emerald-400 flex items-center mb-2">
+                                <span class="text-2xl mr-3">🧱</span> 創造內容複利
+                            </h3>
+                            <p class="text-gray-400">四大系列（防身、解析、自救、追討）構成一個完整的知識體系。觀眾因一支影片而來，很可能被引導觀看其他相關影片，從而有效提升總觀看時長與粉絲轉化率。</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section 2: Alternative Topic Analysis Section -->
+            <section id="topic-analysis" class="mb-12">
+                <div class="bg-gray-800 rounded-xl shadow-2xl p-6 ring-1 ring-white/10">
+                    <h2 class="text-2xl font-bold text-center text-emerald-400 mb-2">備選主題分析：為何暫緩其他高潛力議題？</h2>
+                    <p class="text-center text-gray-400 mb-8 max-w-2xl mx-auto">
+                        「詐騙優先」的決策，是基於對多個潛力主題的綜合評估。點擊下方標籤，可查看各主題的詳細分析，理解為何它們雖極具價值，卻更適合在頻道建立穩固基礎後的第二、三階段推出。
+                    </p>
+                    <div class="flex flex-wrap justify-center gap-2 rounded-lg bg-gray-900 p-2 mb-6">
+                        <button data-topic="car_accident" class="analysis-tab flex-grow sm:flex-grow-0 py-2 px-4 rounded-md font-bold text-gray-200 active">車禍案件</button>
+                        <button data-topic="real_estate" class="analysis-tab flex-grow sm:flex-grow-0 py-2 px-4 rounded-md font-bold text-gray-200">不動產買賣</button>
+                        <button data-topic="franchise" class="analysis-tab flex-grow sm:flex-grow-0 py-2 px-4 rounded-md font-bold text-gray-200">加盟問題</button>
+                        <button data-topic="find_lawyer" class="analysis-tab flex-grow sm:flex-grow-0 py-2 px-4 rounded-md font-bold text-gray-200">找律師/報價</button>
+                        <button data-topic="law_career" class="analysis-tab flex-grow sm:flex-grow-0 py-2 px-4 rounded-md font-bold text-gray-200">法律人職涯</button>
+                        <button data-topic="labor_issue" class="analysis-tab flex-grow sm:flex-grow-0 py-2 px-4 rounded-md font-bold text-gray-200">勞工議題</button>
+                    </div>
+                    <div id="analysis-content-container" class="mt-4 p-4 bg-gray-900 rounded-lg">
+                        <!-- Analysis content gets injected here by JS -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section 3: Strategic Overview Chart -->
+            <section id="strategy-overview" class="mb-12">
+                <div class="bg-gray-800 rounded-xl shadow-2xl p-6 ring-1 ring-white/10">
+                    <h2 class="text-2xl font-bold text-center text-emerald-400 mb-2">三階段策略核心焦點</h2>
+                    <p class="text-center text-gray-400 mb-6 max-w-2xl mx-auto">
+                        此雷達圖視覺化呈現了頻道成長的三個階段中，不同策略目標的權重變化。透過此圖，您可以快速理解從「最大化觸及」到「建立信任」，再到「價值深化」的策略轉移路徑。
+                    </p>
+                    <div class="chart-container">
+                        <canvas id="strategyRadarChart"></canvas>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section 4: Traffic Estimation Report -->
+            <section id="traffic-estimation" class="mb-12">
+                <div class="bg-gray-800 rounded-xl shadow-2xl p-6 ring-1 ring-white/10">
+                    <h2 class="text-2xl font-bold text-center text-emerald-400 mb-2">第一階段流量預估：三個月穩健增長模型</h2>
+                    <p class="text-center text-gray-400 mb-8 max-w-2xl mx-auto">
+                        此份預估是針對頻道啟動後**為期三個月的累積成效**進行的評估，並完全基於**自然流量**。目標在於建立權威性與忠實觀眾，而非追求單一爆款。此模型提供一個務實且極具挑戰性的成效衡量基準。
+                    </p>
+                    <!-- KPI Cards -->
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8 text-center">
+                        <div class="bg-gray-900 p-4 rounded-lg">
+                            <p class="text-3xl font-bold text-emerald-400">35萬+</p>
+                            <p class="text-gray-400">總觀看數 (三個月累計)</p>
+                        </div>
+                        <div class="bg-gray-900 p-4 rounded-lg">
+                            <p class="text-3xl font-bold text-emerald-400">4000+</p>
+                            <p class="text-gray-400">粉絲增長 (三個月累計)</p>
+                        </div>
+                        <div class="bg-gray-900 p-4 rounded-lg">
+                            <p class="text-3xl font-bold text-emerald-400">5%+</p>
+                            <p class="text-gray-400">平均互動率 (讚/評/分)</p>
+                        </div>
+                    </div>
+                    <!-- Growth Chart -->
+                    <div class="chart-container mb-8">
+                        <canvas id="trafficChart"></canvas>
+                    </div>
+                    
+                    <!-- Advertising Strategy -->
+                    <div class="bg-gray-900 rounded-lg p-6 mt-8 border-t-2 border-emerald-500">
+                         <h3 class="text-lg font-bold text-emerald-400 flex items-center mb-2">
+                            <span class="text-2xl mr-3">🚀</span> 流量加速器：廣告投放策略建議
+                        </h3>
+                        <p class="text-gray-400">
+                            請注意，上述所有預估皆**未包含任何廣告預算**。我們堅信，初期應以優質內容獲取自然流量，以驗證內容方向並建立高忠誠度的粉絲基礎。
+                        </p>
+                        <p class="text-gray-400 mt-2">
+                            然而，廣告投放可作為強大的**「加速器」**。當某支影片在自然流量中表現突出（例如，高觀看時長、高互動率）時，我們建議可投入小額、精準的廣告預算，將其推送給更多潛在受眾。這是一種**數據驅動**的策略，能以最高效益擴大爆款影片的影響力，而非盲目地為所有影片投入預算。
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section 5: Interactive Roadmap Section -->
+            <section id="roadmap">
+                <div class="bg-gray-800 rounded-xl shadow-2xl p-4 sm:p-6 ring-1 ring-white/10">
+                    <h2 class="text-2xl font-bold text-center text-emerald-400 mb-2">互動式內容執行藍圖</h2>
+                    <p class="text-center text-gray-400 mb-6 max-w-2xl mx-auto">
+                        點擊下方的階段標籤，即可探索每個階段的詳細目標、核心主題與具體的影片腳本建議。這是一個動態的內容庫，協助您按部就班地執行計畫。
+                    </p>
+
+                    <!-- Phase Tabs -->
+                    <div class="flex flex-col sm:flex-row justify-center rounded-lg bg-gray-900 p-1 mb-6">
+                        <button data-phase="phase1" class="phase-tab flex-1 py-3 px-4 rounded-md font-bold text-gray-200 active">
+                            <span class="text-xl mr-2">I</span> 流量獲取期
+                        </button>
+                        <button data-phase="phase2" class="phase-tab flex-1 py-3 px-4 rounded-md font-bold text-gray-200">
+                           <span class="text-xl mr-2">II</span> 信任建立期
+                        </button>
+                        <button data-phase="phase3" class="phase-tab flex-1 py-3 px-4 rounded-md font-bold text-gray-200">
+                           <span class="text-xl mr-2">III</span> 價值深化期
+                        </button>
+                    </div>
+
+                    <!-- Phase Content -->
+                    <div id="phase-content-container" class="mt-4">
+                        <!-- Content gets injected here by JS -->
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer class="text-center mt-12 py-6 border-t border-gray-700">
+            <p class="text-gray-500">策略報告生成於 <span id="generation-date"></span></p>
+        </footer>
+    </div>
+
+    <script>
+        const analysisData = {
+            car_accident: {
+                title: "車禍案件",
+                rank: "S 級",
+                position: "實用寶典，信任建立期主力",
+                metrics: [
+                    { label: "受眾廣度", value: "極廣 (所有用路人)", score: 9.5 },
+                    { label: "痛點強度", value: "高 (人身安全、財產損失)", score: 9 },
+                    { label: "內容可塑性", value: "極高 (SOP、理賠、肇責分析)", score: 9 },
+                ],
+                summary: "如果說詐騙是『隱形戰場』，車禍就是『物理戰場』。這是最常見的法律糾紛，實用性極強，非常適合在建立初步信任後，作為擴大影響力的第二波主力。"
+            },
+            real_estate: {
+                title: "不動產買賣 (新青安)",
+                rank: "A 級",
+                position: "高價值內容，信任建立期主力",
+                metrics: [
+                    { label: "受眾廣度", value: "廣 (購屋族群)", score: 8.5 },
+                    { label: "痛點強度", value: "極高 (人生最大筆金額)", score: 10 },
+                    { label: "時事關聯性", value: "極強 (新青安熱點)", score: 9.5 },
+                ],
+                summary: "這是『時事+高價值』的完美結合。能精準吸引到一群高購買力、高決策需求的受眾，對於後續業務轉化非常有幫助，適合在第二階段推出。"
+            },
+            franchise: {
+                title: "加盟者的心酸",
+                rank: "A 級",
+                position: "故事共鳴，信任建立期素材",
+                metrics: [
+                    { label: "受眾廣度", value: "中等 (創業者)", score: 7 },
+                    { label: "痛點強度", value: "極高 (創業夢碎、畢生積蓄)", score: 9.5 },
+                    { label: "內容可塑性", value: "高 (合約天坑、話術解析)", score: 8.5 },
+                ],
+                summary: "內容充滿戲劇性，容易引發社群討論和深度共鳴。能幫您建立『為弱勢發聲』的品牌形象，是強化頻道溫度的絕佳素材。"
+            },
+            find_lawyer: {
+                title: "找律師/報價",
+                rank: "A 級",
+                position: "信任基石，價值深化期核心",
+                metrics: [
+                    { label: "受眾廣度", value: "廣 (所有潛在客戶)", score: 8 },
+                    { label: "痛點強度", value: "中高 (怕被騙、怕花冤枉錢)", score: 7.5 },
+                    { label: "內容可塑性", value: "中等 (費用結構、挑選技巧)", score: 7 },
+                ],
+                summary: "這是『信任建立』的關鍵主題。它揭開行業的神秘面紗，直接解答觀眾最核心的疑慮。這類內容的觀看量可能不是最高，但觀眾的『黏著度』和『轉化率』會非常高，適合在第三階段推出。"
+            },
+            law_career: {
+                title: "法律人職涯",
+                rank: "B 級",
+                position: "人設強化，價值深化期調劑",
+                metrics: [
+                    { label: "受眾廣度", value: "窄 (法學生、考生)", score: 5 },
+                    { label: "痛點強度", value: "低 (知識科普型)", score: 4 },
+                    { label: "內容可塑性", value: "中等 (介紹法官、檢察官等)", score: 6 },
+                ],
+                summary: "這個主題不適合做為主力，但非常適合作為『專家人設強化』的內容。偶爾發布一兩集，能展現您的行業深度，與其他法律自媒體做出區隔。"
+            },
+            labor_issue: {
+                title: "勞工議題 (取代川普關稅)",
+                rank: "C 級 -> A 級 (優化後)",
+                position: "全民議題，信任建立期擴充",
+                metrics: [
+                    { label: "受眾廣度", value: "極廣 (所有勞工)", score: 9 },
+                    { label: "痛點強度", value: "高 (失業、薪資、職災)", score: 8.5 },
+                    { label: "內容可塑性", value: "高 (資遣、勞保、加班費)", score: 8.5 },
+                ],
+                summary: "原『川普關稅』主題過於宏大且歸因困難。將其優化為更普適的『勞工權益』後，立刻成為一個高潛力主題。但因其議題較為分散，建議在第二階段用於擴充內容廣度。"
+            }
+        };
+
+        const roadmapData = {
+            phase1: {
+                title: "第一階段：流量獲取期 (全力主攻詐騙議題)",
+                goal: "以『詐騙』此單一全民痛點進行飽和攻擊，快速建立頻道在特定領域的權威形象，最大化初期流量與粉絲黏著度。",
+                themes: [
+                    {
+                        icon: "🛡️",
+                        title: "基礎防身系列 (給所有人看)",
+                        description: "提供最基礎、最緊急的防詐知識，建立頻道『立即有用』的第一印象。",
+                        videos: [
+                            "《黃金1小時SOP》",
+                            "《165專線的3大隱藏功能，不只凍結帳戶！》",
+                            "《什麼是「報案三聯單」？為什麼它比錢還重要？》",
+                            "《收到奇怪的簡訊/LINE連結，三步驟判斷是不是詐騙！》"
+                        ]
+                    },
+                    {
+                        icon: "🔍",
+                        title: "熱門詐騙手法解析系列 (蹭時事)",
+                        description: "緊跟時事，解析最新詐騙手法，展現頻道的即時性與社會關懷。",
+                        videos: [
+                            "《投資詐騙：「飆股老師」帶你飛？還是帶你掉進谷底？》",
+                            "《釣魚網站詐騙：罰單、水電費、電商點數，一點就上鉤！》",
+                            "《AI變臉/變聲詐騙：接到親友的求救電話，先問這個「通關密語」！》",
+                            "《求職詐騙：叫你提供存摺、辦人頭卡的，100%是詐騙！》",
+                            "《戀愛詐騙（殺豬盤）：網路戀人跟你談感情，還是談「錢」？》"
+                        ]
+                    },
+                    {
+                        icon: "🆘",
+                        title: "受害者自救SOP系列 (給正在經歷痛苦的人)",
+                        description: "提供具體、可操作的法律途徑，給予受害者希望與力量。",
+                        videos: [
+                            "《錢已經被轉走超過24小時，還有救嗎？》",
+                            "《如何對人頭帳戶提告？刑事附帶民事訴訟教學！》",
+                            "《開庭時，人頭戶裝可憐說自己也是被害人，怎麼辦？》",
+                            "《錢進了「虛擬貨幣交易所」怎麼辦？還有可能追回嗎？》"
+                        ]
+                    },
+                    {
+                        icon: "⚔️",
+                        title: "進階法律追討系列 (給鐵粉和準客戶)",
+                        description: "展現法律專業的深度，篩選出高價值粉絲，為未來轉化鋪路。",
+                        videos: [
+                            "《除了告人頭戶，可以告「詐騙集團本人」嗎？要怎麼告？》",
+                            "《支付命令是什麼？可以用它來討回詐騙款項嗎？》",
+                            "《勝訴了，但對方名下沒財產，怎麼辦？強制執行教學！》"
+                        ]
+                    },
+                    {
+                        icon: "🚀",
+                        title: "內容優化與社群鉤子 (進階策略)",
+                        description: "在基礎內容之上，加入進階策略以深化觀眾連結，建立社群護城河。",
+                        videos: [
+                            "【觀眾分層】《朋友被騙了，我能幫他做什麼？》- 鎖定『協助者』，擴大分享圈。",
+                            "【互動鉤子】影片結尾提問：『分享你遇過最扯的詐騙手法？』，引爆留言區。",
+                            "【資源建立】提供『報案SOP檢查清單』下載，將觀眾轉為忠實用戶。"
+                        ]
+                    }
+                ]
+            },
+            phase2: {
+                title: "第二階段：信任建立期 (擴展議題廣度)",
+                goal: "在『反詐專家』的基礎上，逐步擴展到其他高關注度的法律議題，並變化內容形式，展現全面的專業能力與頻道新鮮感。",
+                themes: [
+                     {
+                        icon: "🎬",
+                        title: "內容形式變化",
+                        description: "在知識型短影音基礎上，增加故事性與權威性內容，提升觀眾黏著度。",
+                        videos: [
+                            "【案例故事】邀請真實受害者（可匿名），分享從被騙到追款的心路歷程。",
+                            "【專家對談】與資深警官或銀行行員對談，揭露第一線的防詐實務。",
+                            "【直播QA】針對特定詐騙手法（如投資詐騙）開直播，即時互動。"
+                        ]
+                    },
+                    {
+                        icon: "🚗",
+                        title: "車禍系列",
+                        description: "處理另一個全民痛點，其視覺衝擊力強，實用性極高。",
+                        videos: [
+                            "《車禍現場SOP：做對這4件事，立刻省下幾十萬！》",
+                            "《終極理賠懶人包：你漏掉的隱藏賠償有哪些？》"
+                        ]
+                    },
+                    {
+                        icon: "🏡",
+                        title: "不動產系列",
+                        description: "鎖定高價值受眾，處理重大金額決策，建立專業信賴。",
+                        videos: [
+                             "《新青安買房，簽約前沒看懂這3條，小心夢想變惡夢！》"
+                        ]
+                    },
+                    {
+                        icon: "🏪",
+                        title: "加盟創業系列",
+                        description: "用故事性與正義感，建立『為弱勢發聲』的品牌形象。",
+                        videos: [
+                            "《加盟合約三大坑，你的加盟金其實是送錢？》"
+                        ]
+                    }
+                ]
+            },
+            phase3: {
+                title: "第三階段：價值深化期 (鞏固權威地位)",
+                goal: "鞏固權威地位，與忠實粉絲建立深度連結，並透過揭秘行業生態來自然地引導業務轉化。",
+                themes: [
+                    {
+                        icon: "⚖️",
+                        title: "解密律師系列",
+                        description: "揭開行業面紗，解答觀眾核心疑慮，建立最終信任。",
+                        videos: [
+                            "《律師報價單大公開：三種收費模式，哪個最適合你？》",
+                            "《如何找到好律師？諮詢時問這3個問題，假的真不了！》"
+                        ]
+                    },
+                    {
+                        icon: "🧑‍💼",
+                        title: "勞工權益系列",
+                        description: "擴大受眾圈，展現社會關懷，鞏固群眾基礎。",
+                        videos: [
+                            "《老闆叫你「自願離職」？千萬別簽！一招拿到資遣費！》"
+                        ]
+                    },
+                    {
+                        icon: "💬",
+                        title: "社群互動 (長期經營)",
+                        description: "建立鐵粉社群，將流量轉化為忠實支持者。",
+                        videos: [
+                            "粉絲Q&A問答影片",
+                            "特定法律主題直播"
+                        ]
+                    }
+                ]
+            }
+        };
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const chartLabelColor = '#d1d5db';
+            const chartGridColor = 'rgba(255, 255, 255, 0.2)';
+
+            // Radar Chart
+            const ctxRadar = document.getElementById('strategyRadarChart').getContext('2d');
+            new Chart(ctxRadar, {
+                type: 'radar',
+                data: {
+                    labels: ['擴大觸及 (廣度)', '建立信任 (深度)', '內容衝擊力', '議題時效性', '轉化潛力'],
+                    datasets: [{
+                        label: '階段 I: 流量獲取 (主攻詐騙)',
+                        data: [10, 7, 10, 9, 5],
+                        backgroundColor: 'rgba(52, 211, 153, 0.2)',
+                        borderColor: 'rgb(16, 185, 129)',
+                        pointBackgroundColor: 'rgb(16, 185, 129)',
+                        pointBorderColor: '#fff',
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: 'rgb(16, 185, 129)'
+                    }, {
+                        label: '階段 II: 信任建立',
+                        data: [8, 9, 7, 7, 8],
+                        backgroundColor: 'rgba(96, 165, 250, 0.2)',
+                        borderColor: 'rgb(59, 130, 246)',
+                        pointBackgroundColor: 'rgb(59, 130, 246)',
+                        pointBorderColor: '#fff',
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: 'rgb(59, 130, 246)'
+                    }, {
+                        label: '階段 III: 價值深化',
+                        data: [5, 10, 6, 5, 10],
+                        backgroundColor: 'rgba(192, 132, 252, 0.2)',
+                        borderColor: 'rgb(168, 85, 247)',
+                        pointBackgroundColor: 'rgb(168, 85, 247)',
+                        pointBorderColor: '#fff',
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: 'rgb(168, 85, 247)'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        r: {
+                            angleLines: { color: chartGridColor },
+                            grid: { color: chartGridColor },
+                            pointLabels: { font: { size: 14 }, color: chartLabelColor },
+                            ticks: { backdropColor: '#1f2937', color: '#9ca3af' },
+                            suggestedMin: 0,
+                            suggestedMax: 10
+                        }
+                    },
+                    plugins: {
+                        legend: { position: 'top', labels: { color: chartLabelColor } }
+                    }
+                }
+            });
+
+            // Traffic Chart
+            const ctxTraffic = document.getElementById('trafficChart').getContext('2d');
+            new Chart(ctxTraffic, {
+                type: 'bar',
+                data: {
+                    labels: ['第一個月', '第二個月', '第三個月'],
+                    datasets: [{
+                        label: '預估觀看數 (萬)',
+                        data: [8, 12, 15],
+                        backgroundColor: 'rgba(52, 211, 153, 0.6)',
+                        borderColor: 'rgb(16, 185, 129)',
+                        borderWidth: 1,
+                        yAxisID: 'y'
+                    }, {
+                        label: '預估粉絲增長',
+                        data: [1000, 1500, 1500],
+                        backgroundColor: 'rgba(96, 165, 250, 0.6)',
+                        borderColor: 'rgb(59, 130, 246)',
+                        borderWidth: 1,
+                        yAxisID: 'y1'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: {
+                            ticks: { color: chartLabelColor },
+                            grid: { color: chartGridColor }
+                        },
+                        y: {
+                            type: 'linear',
+                            display: true,
+                            position: 'left',
+                            ticks: { color: '#6ee7b7', callback: function(value) { return value + '萬' } },
+                            grid: { color: 'rgba(255, 255, 255, 0.1)' },
+                            title: { display: true, text: '觀看數', color: '#6ee7b7' }
+                        },
+                        y1: {
+                            type: 'linear',
+                            display: true,
+                            position: 'right',
+                            ticks: { color: '#93c5fd' },
+                            grid: { drawOnChartArea: false },
+                            title: { display: true, text: '粉絲數', color: '#93c5fd' }
+                        }
+                    },
+                    plugins: {
+                        legend: { position: 'top', labels: { color: chartLabelColor } },
+                        tooltip: {
+                            mode: 'index',
+                            intersect: false
+                        }
+                    }
+                }
+            });
+
+
+            const phaseContentContainer = document.getElementById('phase-content-container');
+            const phaseTabs = document.querySelectorAll('.phase-tab');
+            
+            function renderPhaseContent(phaseKey) {
+                const phaseData = roadmapData[phaseKey];
+                const themesHTML = phaseData.themes.map(theme => {
+                    const videosHTML = theme.videos.map(video => `
+                        <li class="flex items-start">
+                            <span class="text-emerald-400 mr-2 mt-1">◆</span>
+                            <span class="text-gray-300">${video}</span>
+                        </li>
+                    `).join('');
+
+                    return `
+                        <div class="bg-gray-900 rounded-lg p-5 border border-gray-700 hover:border-emerald-500 transition-colors duration-300 flex flex-col">
+                            <div>
+                                <h4 class="text-lg font-bold text-gray-100 flex items-center">
+                                    <span class="text-2xl mr-3">${theme.icon}</span>
+                                    ${theme.title}
+                                </h4>
+                                <p class="text-sm text-gray-400 mt-1 mb-4 flex-grow">${theme.description}</p>
+                            </div>
+                            <ul class="space-y-2 mt-auto">
+                                ${videosHTML}
+                            </ul>
+                        </div>
+                    `;
+                }).join('');
+
+                const contentHTML = `
+                    <div class="p-4 bg-gray-900 rounded-lg border-l-4 border-emerald-500">
+                        <h3 class="text-xl font-bold text-emerald-300">${phaseData.title}</h3>
+                        <p class="mt-2 text-gray-400">${phaseData.goal}</p>
+                    </div>
+                    <div class="mt-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        ${themesHTML}
+                    </div>
+                `;
+                phaseContentContainer.innerHTML = contentHTML;
+            }
+
+            phaseTabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    phaseTabs.forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    renderPhaseContent(tab.dataset.phase);
+                });
+            });
+
+            // Analysis Tabs
+            const analysisContentContainer = document.getElementById('analysis-content-container');
+            const analysisTabs = document.querySelectorAll('.analysis-tab');
+
+            function renderAnalysisContent(topicKey) {
+                const topicData = analysisData[topicKey];
+                let contentHTML = `
+                    <div class="flex flex-col md:flex-row gap-4 items-start">
+                        <div class="flex-1">
+                            <h3 class="text-xl font-bold text-emerald-300">${topicData.title} <span class="text-base font-medium text-gray-400 ml-2">(${topicData.rank})</span></h3>
+                            <p class="mt-2 text-amber-400 font-semibold">策略定位：${topicData.position}</p>
+                        </div>
+                        <div class="flex-shrink-0 w-full md:w-auto">
+                            <p class="text-gray-400 text-lg font-bold">綜合評分</p>
+                            <div class="grid grid-cols-3 gap-x-4 gap-y-2 mt-2">
+                                ${topicData.metrics.map(metric => `
+                                    <div class="text-sm text-gray-300">${metric.label}</div>
+                                    <div class="col-span-2 bg-gray-700 rounded-full h-4 my-auto">
+                                        <div class="bg-emerald-500 h-4 rounded-full" style="width: ${metric.score * 10}%"></div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-4 pt-4 border-t border-gray-700">
+                        <p class="text-gray-300 font-semibold">總評：</p>
+                        <p class="text-gray-400 mt-1">${topicData.summary}</p>
+                    </div>
+                `;
+                analysisContentContainer.innerHTML = contentHTML;
+            }
+            
+            analysisTabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    analysisTabs.forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    renderAnalysisContent(tab.dataset.topic);
+                });
+            });
+
+
+            // Initial Renders
+            renderPhaseContent('phase1');
+            renderAnalysisContent('car_accident');
+
+            // Set generation date
+            document.getElementById('generation-date').textContent = new Date().toLocaleDateString('zh-TW', { year: 'numeric', month: 'long', day: 'numeric' });
+        });
+    </script>
+</body>
+</html>
